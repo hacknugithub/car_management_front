@@ -22,7 +22,6 @@ const CarForm = ({onCarAdded, onCarEdited, selectedCar}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    debugger;
     if(Object.keys(selectedCar).length === 0) {
       API.post("/cars", { car: { plateNumber,  model, year }})
         .then((response) => {
@@ -44,6 +43,14 @@ const CarForm = ({onCarAdded, onCarEdited, selectedCar}) => {
         })
         .catch((error) => console.error("Error creating car:", error));
     }
+  };
+
+  const onCancelEdit = () => {
+    setPlateNumber("")
+    setModel("")
+    setYear("")
+    setIsEdit(false);
+    onCarEdited();
   };
   
 
@@ -78,7 +85,12 @@ const CarForm = ({onCarAdded, onCarEdited, selectedCar}) => {
     </div>
     <button type="submit" className={`${isEdit ? "bg-green-500" : "bg-blue-500"} text-white px-4 py-2 rounded`} >
       { isEdit ? 'Edit Car' : 'Add Car' }
-    </button>  
+    </button>
+    { isEdit && (
+      <button type="submit" className={"bg-red-500 text-white px-4 py-2 mx-2 rounded"} onClick={() => onCancelEdit()} >
+        Cancel
+      </button>
+    )}
   </form>
   )
 }

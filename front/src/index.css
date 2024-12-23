@@ -1,6 +1,9 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+/* @import 'react-table/react-table.css'; */
+@import "primereact/resources/themes/lara-light-cyan/theme.css";
+
 
 body {
   margin: 0;

@@ -13,8 +13,6 @@ export const CarList = ({onEditCar}) => {
       .catch((err) => console.error("Failed fetching cars: ", err));
   }, [])
 
-  // delete Car
-
   const deleteCar = (id) => {
     API.delete(`/cars/${id}`)
       .then(() => setCars(cars.filter((car) => car.id !==id)))
@@ -28,13 +26,15 @@ export const CarList = ({onEditCar}) => {
   
   return (
     <div className='p-4'>
-      <h1 className="text-xl font-bold mb-4">Car List</h1>
+      <h1 className="text-xl font-bold mb-4">Car List | <Link className="bg-blue-500 text-white px-2 py-1 rounded" to={'/car_maintenances'}>Go to: Car Maintenance</Link></h1> 
       <ul className="space-y-2">
         {cars.map((car) => (
-          <Link to={`/cars/${car.id}`}>
           <li key={`${car.plate_number}-${car.id}`} className="flex justify-between items-center bg-gray-100 round p-2 my-4">
             <span>{car.plateNumber} | {car.model} ( {car.year} )</span>
             <div className='space-x-2'>
+              <button className='bg-blue-500 text-white px-2 py-1 rounded'>
+              <Link to={`/cars/${car.id}`}>Show</Link>
+              </button>
               <button className='bg-gray-500 text-white px-2 py-1 rounded' onClick={() => setSelectedCar(car)}>
                 Edit
               </button>
@@ -43,7 +43,6 @@ export const CarList = ({onEditCar}) => {
               </button>
             </div>
           </li>
-          </Link>
         ))}
       </ul>
     </div>

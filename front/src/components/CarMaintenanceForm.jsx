@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import API from "../api";
 import dayjs from "dayjs";
 
 const CarMaintenanceForm = ({onCarMaintenanceAdded, onCarMaintenanceEdited, selectedCarMaintenance, carId}) => {
+  const statusOptions = [
+    { value: "", label: "Select a status" },
+    { value: "in_progress", label: "In Progress" },
+    { value: "completed", label: "Completed" },
+    { value: "pending", label: "Pending" }
+];
   const [description, setDescription] = useState("")
-  const [status, setStatus] = useState("")
+  const [status, setStatus] = useState(statusOptions[0])
   const [date, setDate] = useState("")
 
   const [isEdit, setIsEdit] = useState(false)
 
+
   useEffect(() => {
     if(selectedCarMaintenance){
       setDescription(selectedCarMaintenance.description)
-      setStatus(selectedCarMaintenance.status)
-      console.log(dayjs(selectedCarMaintenance.date).format("YYYY-MM-DD"))
+      setStatus(statusOptions.find(el => el.value === selectedCarMaintenance.status))
       setDate(dayjs(selectedCarMaintenance.date).format("YYYY-MM-DD"))
       
     }
@@ -24,23 +31,21 @@ const CarMaintenanceForm = ({onCarMaintenanceAdded, onCarMaintenanceEdited, sele
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    debugger;
     if(Object.keys(selectedCarMaintenance).length === 0) {
-      API.post("/car_maintenances", { carMaintenance: { carId, description, status, date }})
+      API.post("/car_maintenances", { carMaintenance: { carId, description, status: status.value, date }})
         .then((response) => {
           setDescription("")
-          setStatus("")
+          setStatus(statusOptions[0])
           setDate("")
           setIsEdit(false);
           onCarMaintenanceAdded(response.data);
         })
         .catch((error) => console.error("Error creating car:", error));
     } else {
-      debugger;
-      API.put(`/car_maintenances/${selectedCarMaintenance.id}`, { carMaintenance: { carId, description,  status, date }})
+      API.put(`/car_maintenances/${selectedCarMaintenance.id}`, { carMaintenance: { carId, description,  status: status.value, date }})
         .then((response) => {
           setDescription("")
-          setStatus("")
+          setStatus(statusOptions[0])
           setDate("")
           setIsEdit(false);
           onCarMaintenanceEdited(response.data);
@@ -48,6 +53,14 @@ const CarMaintenanceForm = ({onCarMaintenanceAdded, onCarMaintenanceEdited, sele
         .catch((error) => console.error("Error creating car:", error));
     }
   };
+
+  const onCancelEdit = () => {
+    setDescription("")
+    setStatus(statusOptions[0])
+    setDate("")
+    setIsEdit(false);
+    onCarMaintenanceEdited();
+  }
   
 
   return (
@@ -63,11 +76,10 @@ const CarMaintenanceForm = ({onCarMaintenanceAdded, onCarMaintenanceEdited, sele
     </div>
     <div className="mb-2">
       <label className="block font-bold mb-1">Status:</label>
-      <input
-        type="text"
+      <Select
         value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        className="w-full p-2 border rounded"
+        onChange={(e) => setStatus(e)}
+        options={statusOptions}
       />
     </div>
     <div className="mb-2">
@@ -82,6 +94,11 @@ const CarMaintenanceForm = ({onCarMaintenanceAdded, onCarMaintenanceEdited, sele
     <button type="submit" className={`${isEdit ? "bg-green-500" : "bg-blue-500"} text-white px-4 py-2 rounded`} >
       { isEdit ? 'Edit Car Maintenance' : 'Add Car Maintenance' }
     </button>  
+    { isEdit && (
+      <button type="" className={" bg-red-500 text-white mx-2 px-4 py-2 rounded"} onClick={() => onCancelEdit()}>
+        Cancel
+      </button>
+    )}
   </form>
   )
 }
