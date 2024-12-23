@@ -76,12 +76,6 @@ const CarMaintenanceForm = ({onCarMaintenanceAdded, onCarMaintenanceEdited, sele
     </div>
     <div className="mb-2">
       <label className="block font-bold mb-1">Status:</label>
-      {/* <input
-        type="text"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        className="w-full p-2 border rounded"
-      /> */}
       <Select
         value={status}
         onChange={(e) => setStatus(e)}
