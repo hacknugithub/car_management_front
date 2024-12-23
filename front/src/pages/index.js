@@ -16,6 +16,7 @@ const Index = () => {
   
   const editCar = (editedCar) => {
     console.log("Editing a car", editedCar)
+    setSelectedCar({});
     window.location.reload(true);
   };
 
